@@ -1,5 +1,8 @@
 package com.zanfardino.homework.controllers;
 
+import com.zanfardino.homework.exceptions.BadRequestReturnedException;
+import com.zanfardino.homework.exceptions.HttpClientBadRequestReturnedException;
+import com.zanfardino.homework.exceptions.HttpClientServerErrorReturnedException;
 import com.zanfardino.homework.http.AbstractHttpTestServer;
 import com.zanfardino.homework.model.CampaignDO;
 import com.zanfardino.homework.model.CreativeDO;
@@ -14,14 +17,35 @@ import static com.zanfardino.homework.TestConstant.CREATIVES_JSON;
 import static org.junit.Assert.assertEquals;
 
 public class TestJerseyRestController extends AbstractHttpTestServer {
-    private static final JerseyRestController controller = new JerseyRestController();;
-    private static final Utility utility = new Utility();;
+    private static final JerseyRestController controller = new JerseyRestController();
+    private static final Utility utility = new Utility();
+
+    private static final String URL = "http://localhost:1337/api/";
+    private static final String NOT_OK = "not_ok/";
+    private static final String BAD_REQUEST = "bad_request/";
+    private static final String SERVER_ERROR = "server_error/";
 
     @Before
     public void setup() {
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+        controller.setUrl(URL);
+    }
 
-        controller.setUrl("http://localhost:1337/api/");
+    @Test(expected = BadRequestReturnedException.class)
+    public void testGetCampaignsNoOK() throws Exception {
+        controller.setUrl(URL + NOT_OK);
+        controller.getCampaigns();
+    }
+
+    @Test(expected = HttpClientBadRequestReturnedException.class)
+    public void testGetCampaignsBadRequest() throws Exception {
+        controller.setUrl(URL + BAD_REQUEST);
+        controller.getCampaigns();
+    }
+
+    @Test(expected = HttpClientServerErrorReturnedException.class)
+    public void testGetCampaignsServerError() throws Exception {
+        controller.setUrl(URL + SERVER_ERROR);
+        controller.getCampaigns();
     }
 
     @Test
@@ -30,6 +54,24 @@ public class TestJerseyRestController extends AbstractHttpTestServer {
         final List<CampaignDO> actual = controller.getCampaigns();
 
         assertEquals(expected, actual);
+    }
+
+    @Test(expected = BadRequestReturnedException.class)
+    public void testGetCreativesNotOK() throws Exception {
+        controller.setUrl(URL + NOT_OK);
+        controller.getCampaigns();
+    }
+
+    @Test(expected = HttpClientBadRequestReturnedException.class)
+    public void testGetCreativesBadRequest() throws Exception {
+        controller.setUrl(URL + BAD_REQUEST);
+        controller.getCreatives();
+    }
+
+    @Test(expected = HttpClientServerErrorReturnedException.class)
+    public void testGetCreativesServerError() throws Exception {
+        controller.setUrl(URL + SERVER_ERROR);
+        controller.getCreatives();
     }
 
     @Test

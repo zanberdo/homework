@@ -1,8 +1,6 @@
 package com.zanfardino.homework.util;
 
-import com.zanfardino.homework.controllers.AnalysisController;
-import com.zanfardino.homework.model.CampaignDO;
-import com.zanfardino.homework.model.CreativeDO;
+import com.zanfardino.homework.exceptions.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
@@ -22,9 +20,12 @@ import java.util.List;
 public class Utility {
     private static final Logger LOG = LogManager.getLogger(Utility.class);
 
+    public Utility() {
+        System.setProperty("javax.xml.bind.context.factory","org.eclipse.persistence.jaxb.JAXBContextFactory");
+    }
 
     public String marshallPOJO(final Object pojo, final Class genericClass) {
-        LOG.debug("Marshalling POJO ({}) into JSON string...", pojo);
+        LOG.debug("Marshalling POJO ({}) into JSON string...", genericClass.toString());
         final StringWriter json = new StringWriter();
         try {
             final JAXBContext context = JAXBContext.newInstance(genericClass);
@@ -36,15 +37,15 @@ public class Utility {
 
             marshaller.marshal(pojo, json);
         } catch (Exception e) {
-            LOG.error("Failed to marshal ({}) successfully: {}", pojo, e.getStackTrace());
-            return null;
+            LOG.error("Failed to marshal POJO ({}) successfully: {}", pojo, e.getStackTrace());
+            throw new JsonProcessingException("Failed to marshal (" + pojo + ") successfully", e);
         }
         return json.toString();
     }
 
     public <T> List<T> unmarshalJSON(final String json, final Class genericClass) {
         LOG.debug("Unmarshalling JSON string ({}) into POJO ...", json);
-        List<T> results;
+        List<T> results = new ArrayList<>();
         try {
             final JAXBContext context = JAXBContext.newInstance(genericClass);
             final Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -55,14 +56,14 @@ public class Utility {
             results = (List<T>) unmarshaller.unmarshal(new StreamSource(new StringReader(json)), genericClass).getValue();
         } catch (Exception e) {
             LOG.error("Failed to unmarshal JSON ({}) successfully: {}", json, e.getStackTrace());
-            return null;
+            throw new JsonProcessingException("Failed to unmarshal JSON (" + json + ") successfully", e);
         }
         return results;
     }
 
     public <T> List<T> unmarshalFile(final File file, final Class genericClass) {
         LOG.debug("Unmarshalling JSON fail ({}) into POJO ...", file.getName());
-        List<T> results;
+        List<T> results = new ArrayList<>();
         try {
             final JAXBContext context = JAXBContext.newInstance(genericClass);
             final Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -73,7 +74,7 @@ public class Utility {
             results = (List<T>) unmarshaller.unmarshal(new StreamSource(file), genericClass).getValue();
         } catch (Exception e) {
             LOG.error("Failed to unmarshal JSON file ({}) successfully: {}", file.getName(), e.getStackTrace());
-            return null;
+            throw new JsonProcessingException("Failed to unmarshal JSON file (" + file.getName() + ") successfully", e);
         }
         return results;
     }

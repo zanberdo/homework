@@ -8,6 +8,8 @@ import com.zanfardino.homework.model.ParametersDO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 public class Main {
     private static final Logger LOG = LogManager.getLogger(Main.class);
 
@@ -19,9 +21,19 @@ public class Main {
         final CommandLineController commandLineController = new CommandLineController();
         final MainController controller = new MainController(commandLineController, analysisController1, jerseyRestController);
 
-        ParametersDO parameters = controller.getParameters(args);
-        controller.analyzeData(parameters);
-        controller.processRequest(parameters);
+        try {
+            ParametersDO parameters = controller.getParameters(args);
+            if (Objects.isNull(parameters)) {
+                System.exit(0);
+            }
+            controller.analyzeData(parameters.getUrl());
+            controller.processRequest(parameters);
+        } catch (Exception e) {
+            LOG.info(e);
+            System.err.println(e.getMessage());
+        }
+
+        LOG.debug("... main() done");
     }
 
 }
