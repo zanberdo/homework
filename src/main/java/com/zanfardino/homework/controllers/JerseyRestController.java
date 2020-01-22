@@ -1,5 +1,6 @@
 package com.zanfardino.homework.controllers;
 
+import com.zanfardino.homework.exceptions.BadRequestReturnedException;
 import com.zanfardino.homework.exceptions.HttpClientBadRequestReturnedException;
 import com.zanfardino.homework.exceptions.HttpClientServerErrorReturnedException;
 import com.zanfardino.homework.model.CampaignDO;
@@ -46,14 +47,14 @@ public class JerseyRestController {
         final Response response = request.get();
         logResponse(response);
 
-        // TODO: write endpoint definition and tests for the following error conditions
         if (response.getStatus() >= 500) {
             throw new HttpClientServerErrorReturnedException(response.getStatus(), response.readEntity(String.class), response.getHeaders().toString());
         } else if (response.getStatus() >= 400) {
             throw new HttpClientBadRequestReturnedException(response.getStatus(), response.readEntity(String.class), response.getHeaders().toString());
+        } else if (response.getStatus() != 200) {
+            throw new BadRequestReturnedException("Failed to connect to target URL: " + target);
         }
-        return response.readEntity(new GenericType<List<CampaignDO>>() {
-        });
+        return response.readEntity(new GenericType<List<CampaignDO>>() {});
     }
 
     public List<CreativeDO> getCreatives() throws HttpClientBadRequestReturnedException {
@@ -65,14 +66,14 @@ public class JerseyRestController {
         final Response response = request.get();
         logResponse(response);
 
-        // TODO: write endpoint definition and tests for the following error conditions
         if (response.getStatus() >= 500) {
             throw new HttpClientServerErrorReturnedException(response.getStatus(), response.readEntity(String.class), response.getHeaders().toString());
         } else if (response.getStatus() >= 400) {
             throw new HttpClientBadRequestReturnedException(response.getStatus(), response.readEntity(String.class), response.getHeaders().toString());
+        } else if (response.getStatus() != 200) {
+            throw new BadRequestReturnedException("Failed to connect to target URL: " + target);
         }
-        return response.readEntity(new GenericType<List<CreativeDO>>() {
-        });
+        return response.readEntity(new GenericType<List<CreativeDO>>() {});
     }
 
     private void logRequest(final WebTarget target, final String method) {

@@ -24,40 +24,39 @@ public class CommandLineController {
     }
 
     public ParametersDO process(final String[] args) {
-        LOG.debug("Processing args: {}", args);
+        LOG.debug("   Processing command line arguments: {}", args);
         final Options options = buildOptions();
         final ParametersDO parameters = new ParametersDO();
 
-        final String usage = "Supply appropriate option to process Ad-Juster mock data.\n";
+        final String usage = "Supply appropriate option to process Ad-Juster test data.\n";
 
-        final CommandLine commandLine;
         final CommandLineParser parser = new DefaultParser();
         final HelpFormatter formatter = new HelpFormatter();
 
         try {
+            final CommandLine commandLine;
             commandLine = parser.parse(options, args);
             if (commandLine.hasOption("help")) {
                 formatter.printHelp(usage, null, options, null, true);
-//                System.exit(0);
                 return null;
             }
             if (commandLine.getOptions().length == 0) {
                 LOG.error("Failed to supply target URL and one or more required option.");
                 formatter.printHelp(usage, null, options, null, true);
-                throw new BadOptionsException("Failed to supply target URL and one or more required option.");
+                throw new BadOptionsException("Failed to supply target URL (--url target) and one or more required option.");
             }
 
             if (commandLine.hasOption("url") && commandLine.getOptions().length == 1 ) {
                 LOG.error("Failed to supply one or more required reporting options.");
                 formatter.printHelp(usage, null, options, null, true);
-                throw new BadOptionsException("Failed to supply one or more required options.");
+                throw new BadOptionsException("Provided target url ("+ commandLine.getOptionValue("url") +") but failed to supply one or more required options.");
             }
 
             if (commandLine.hasOption("url")) {
                 if (commandLine.getOptionValue("url").isEmpty()) {
                     LOG.error("Failed to supply required target URL.");
                     formatter.printHelp(usage, null, options, null, true);
-                    throw new BadOptionsException("Failed to supply required target URL.");
+                    throw new BadOptionsException("Failed to supply required target URL. --url requires a target url. ");
                 }
                 parameters.setUrl(commandLine.getOptionValue("url"));
             }

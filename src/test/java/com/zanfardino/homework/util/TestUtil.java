@@ -1,7 +1,12 @@
 package com.zanfardino.homework.util;
 
+import com.zanfardino.homework.exceptions.JsonProcessingException;
+import com.zanfardino.homework.model.CampaignClicksDO;
 import com.zanfardino.homework.model.CampaignDO;
+import com.zanfardino.homework.model.CampaignImpressionsDO;
+import com.zanfardino.homework.model.CampaignViewsDO;
 import com.zanfardino.homework.model.CreativeDO;
+import com.zanfardino.homework.model.TotalDO;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,21 +17,18 @@ import java.util.List;
 import static com.zanfardino.homework.TestConstant.CAMPAIGNS_JSON;
 import static com.zanfardino.homework.TestConstant.CREATIVES_JSON;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class TestUtil {
-    private static List<CampaignDO> campaignList;
-    private static List<CreativeDO> creativeList;
+    private List<CampaignDO> campaignList;
+    private List<CreativeDO> creativeList;
 
-    private static File campaignFile;
-    private static File creativeFile;
+    private File campaignFile;
+    private File creativeFile;
 
-    private static Utility utility;
+    private Utility utility;
 
     @Before
     public void setup() {
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
-
         final CampaignDO campaign1 = new CampaignDO();
         campaign1.setAdvertiser("Telemundo");
         campaign1.setCpm("$12.00");
@@ -75,14 +77,13 @@ public class TestUtil {
         utility = new Utility();
     }
 
-    @Test
-    public void testMarshalInvalidPOJO() {
-        final String actual = utility.marshallPOJO(new Object(), CampaignDO.class);
-        assertNull(actual);
+    @Test(expected = JsonProcessingException.class)
+    public void testMarshalInvalidPOJO() throws Exception {
+        utility.marshallPOJO(new Object(), CampaignDO.class);
     }
 
     @Test
-    public void testMarshalPOJO() {
+    public void testMarshalPOJO() throws Exception {
         final CampaignDO campaign = new CampaignDO();
         campaign.setAdvertiser("Telemundo");
         campaign.setCpm("$12.00");
@@ -105,8 +106,7 @@ public class TestUtil {
     }
 
     @Test
-    public void testMarshalPOJOList() {
-        final String actual = utility.marshallPOJO(campaignList, CampaignDO.class);
+    public void testMarshalPOJOList() throws Exception {
         final String expected = "[ {\n" +
                 "   \"advertiser\" : \"Telemundo\",\n" +
                 "   \"cpm\" : \"$12.00\",\n" +
@@ -123,19 +123,89 @@ public class TestUtil {
                 "   \"startDate\" : \"2018-06-28\"\n" +
                 "} ]";
 
+        final String actual = utility.marshallPOJO(campaignList, CampaignDO.class);
+
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testUnmarshallerInvalidJSON() {
-        final List<Object> actual = utility.unmarshalJSON("", CampaignDO.class);
-        assertNull( actual);
+    public void testMarshalTotal() throws Exception {
+        final String expected = "{\n" +
+                "   \"total\" : 999\n" +
+                "}";
+        final TotalDO total = new TotalDO();
+        total.setTotal(999);
+
+        final String actual = utility.marshallPOJO(total, TotalDO.class);
+
+        assertEquals(expected, actual);
     }
 
     @Test
+    public void testMarshalCampaignClicksDO() throws Exception {
+        final String expected = "{\n" +
+                "   \"clicks\" : 7777,\n" +
+                "   \"id\" : 999\n" +
+                "}";
+        final CampaignClicksDO campaignClicks = new CampaignClicksDO();
+        campaignClicks.setId(999l);
+        campaignClicks.setClicks(7777l);
+
+        final String actual = utility.marshallPOJO(campaignClicks, CampaignClicksDO.class);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testMarshalCampaignImpressions() throws Exception{
+        final String expected = "{\n" +
+                "   \"id\" : 888,\n" +
+                "   \"impressions\" : 1234\n" +
+                "}";
+        final CampaignImpressionsDO campaignImpressions = new CampaignImpressionsDO();
+        campaignImpressions.setId(888l);
+        campaignImpressions.setImpressions(1234l);
+
+        final String actual = utility.marshallPOJO(campaignImpressions, CampaignImpressionsDO.class);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testMarshalCampaignClicks() throws Exception{
+        final String expected = "{\n" +
+                "   \"clicks\" : 5432,\n" +
+                "   \"id\" : 123\n" +
+                "}";
+        final CampaignClicksDO campaignClicks = new CampaignClicksDO();
+        campaignClicks.setId(123l);
+        campaignClicks.setClicks(5432l);
+
+        final String actual = utility.marshallPOJO(campaignClicks, CampaignClicksDO.class);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testMarshalCampaignViews() throws Exception {
+        final String expected = "{\n" +
+                "   \"id\" : 867,\n" +
+                "   \"views\" : 1000\n" +
+                "}";
+        final CampaignViewsDO campaignViews = new CampaignViewsDO();
+        campaignViews.setId(867l);
+        campaignViews.setViews(1000l);
+
+        final String actual = utility.marshallPOJO(campaignViews, CampaignViewsDO.class);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = JsonProcessingException.class)
+    public void testUnmarshallerInvalidJSON() {
+        utility.unmarshalJSON("", CampaignDO.class);
+    }
+
+    @Test(expected = JsonProcessingException.class)
     public void testUnmarshallerInvalidFile() {
-        final List<Object> actual = utility.unmarshalFile(new File(""), CampaignDO.class);
-        assertNull( actual);
+        utility.unmarshalFile(new File(""), CampaignDO.class);
     }
 
     @Test
@@ -160,7 +230,5 @@ public class TestUtil {
     public void testUnmarshallerCreativeFile() {
         final List<CreativeDO> actual = utility.unmarshalFile(creativeFile, CreativeDO.class);
         assertEquals("Failed to evaluate expected Java POJO from supplied JSON file", creativeList, actual);
-
-
     }
 }

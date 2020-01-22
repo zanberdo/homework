@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created on 2019-04-25.
@@ -27,8 +28,6 @@ public class TestAnalysisController {
 
     @Before
     public void setup() throws Exception {
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
-
         utility = new Utility();
         controller = new AnalysisController();
 
@@ -75,7 +74,15 @@ public class TestAnalysisController {
     }
 
     @Test
-    public void testGetClicksPerCampaign() throws Exception {
+    public void testGetClicksByNonExistentCampaign() throws Exception {
+        controller.process(campaigns, creatives);
+
+        final Long actual = controller.getClicksByCampaign(null);
+        assertNull(actual);
+    }
+
+    @Test
+    public void testGetClicksByCampaign() throws Exception {
         controller.process(campaigns, creatives);
 
         final Long expected = 24044L;
@@ -84,7 +91,15 @@ public class TestAnalysisController {
     }
 
     @Test
-    public void testGetImpressionsPerCampaign() throws Exception {
+    public void testGetImpressionsByNonExistentCampaign() throws Exception {
+        controller.process(campaigns, creatives);
+
+        final Long actual = controller.getImpressionsByCampaign(null);
+        assertNull(actual);
+    }
+
+    @Test
+    public void testGetImpressionsByCampaign() throws Exception {
         controller.process(campaigns, creatives);
 
         final Long expected = 217592L;
@@ -93,12 +108,28 @@ public class TestAnalysisController {
     }
 
     @Test
-    public void testGetViewsPerCampaign() throws Exception {
+    public void testGetViewsByNonExistentCampaign() throws Exception {
+        controller.process(campaigns, creatives);
+
+        final Long actual = controller.getViewsByCampaign(null);
+        assertNull(actual);
+    }
+
+    @Test
+    public void testGetViewsByCampaign() throws Exception {
         controller.process(campaigns, creatives);
 
         final Long expected = 32015L;
         final Long actual = controller.getViewsByCampaign(CAMPAIGN_ID);
         assertEquals("Failed to get expected total views for campaign", expected, actual);
+    }
+
+    @Test
+    public void testGetCampaignSummaryByNonExistentCampaign() throws Exception {
+        controller.process(campaigns, creatives);
+
+        final CampaignSummaryDO actual = controller.getCampaignSummaryById(null);
+        assertNull(actual);
     }
 
     @Test
@@ -131,7 +162,6 @@ public class TestAnalysisController {
         final List<CampaignSummaryDO> actual = controller.getCampaignSummary();
 
         assertEquals("Failed to return expected campaign summary", expectedSize, actual.size());
-        // TODO: assert actual list is equal to expected list
     }
 
 }

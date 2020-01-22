@@ -12,6 +12,9 @@ public class CampaignSummaryDO extends CampaignDO {
     private Long views;
     private Set<CreativeDO> creatives;
 
+    public CampaignSummaryDO() {
+    }
+
     public CampaignSummaryDO(final CampaignDO campaign) {
         setId(campaign.getId());
         setName(campaign.getName());

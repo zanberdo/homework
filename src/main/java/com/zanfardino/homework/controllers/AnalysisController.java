@@ -71,15 +71,18 @@ public class AnalysisController {
 
         Long clicks = 0L;
         final CampaignDO dataMapKey = campaignIdMap.get(campaignID);
+        if (Objects.isNull(dataMapKey)) {
+            LOG.info("No records found for campaign ID: {}", campaignID);
+            return null;
+        }
         final Set<CreativeDO> creatives = dataMap.get(dataMapKey);
 
         if (Objects.nonNull(creatives)) {
             for (CreativeDO creative : creatives) {
                 clicks += creative.getClicks();
             }
-        } else {
-            clicks = null;
         }
+
         return clicks;
     }
 
@@ -88,15 +91,18 @@ public class AnalysisController {
 
         Long impressions = 0L;
         final CampaignDO dataMapKey = campaignIdMap.get(campaignID);
+        if (Objects.isNull(dataMapKey)) {
+            LOG.info("No records found for campaign ID: {}", campaignID);
+            return null;
+        }
         final Set<CreativeDO> creatives = dataMap.get(dataMapKey);
 
         if (Objects.nonNull(creatives)) {
             for (CreativeDO creative : creatives) {
                 impressions += creative.getImpressions();
             }
-        } else {
-            impressions = null;
         }
+
         return impressions;
     }
 
@@ -105,14 +111,16 @@ public class AnalysisController {
 
         Long views = 0L;
         final CampaignDO dataMapKey = campaignIdMap.get(campaignID);
+        if (Objects.isNull(dataMapKey)) {
+            LOG.info("No records found for campaign ID: {}", campaignID);
+            return null;
+        }
         final Set<CreativeDO> creatives = dataMap.get(dataMapKey);
 
         if (Objects.nonNull(creatives)) {
             for (CreativeDO creative : creatives) {
                 views += creative.getViews();
             }
-        } else {
-            views = null;
         }
         return views;
     }
@@ -128,7 +136,10 @@ public class AnalysisController {
         LOG.debug("Returning Campaign summary report for campaign id ({})", campaignID);
 
         final CampaignDO dataMapKey = campaignIdMap.get(campaignID);
-
+        if (Objects.isNull(dataMapKey)) {
+            LOG.info("No records found for campaign ID: {}", campaignID);
+            return null;
+        }
         final CampaignDO campaign = new CampaignDO();
         campaign.setId(dataMapKey.getId());
         campaign.setAdvertiser(dataMapKey.getAdvertiser());
@@ -151,6 +162,11 @@ public class AnalysisController {
 
         final List<CampaignSummaryDO> campaignSummary = new ArrayList<>();
         for (Long campaignID : campaignIdMap.keySet()) {
+            final CampaignSummaryDO campaignSummaryDO = getCampaignSummaryById(campaignID);
+            if (Objects.isNull(campaignSummaryDO)) {
+                LOG.info("Failed to return campaign summary for ID: {}", campaignID);
+                return null;
+            }
             campaignSummary.add(getCampaignSummaryById(campaignID));
         }
         return campaignSummary;
