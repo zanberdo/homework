@@ -29,7 +29,7 @@ public class MainController {
         this.jerseyRestController = jerseyRestController;
     }
 
-    public ParametersDO getParameters(final String[] args) {
+    public ParametersDO getParameters(final String[] args) throws Exception {
         LOG.debug("Processing command line parameters...");
 
         ParametersDO parameters = new ParametersDO();
@@ -37,12 +37,13 @@ public class MainController {
             parameters = commandLineController.process(args);
         } catch (BadOptionsException e) {
             LOG.error("ERROR: Failed to provide required options: {}", e.getMessage());
-            System.exit(1);
+//            System.exit(1);
+            throw e;
         }
         return parameters;
     }
 
-    public void analyzeData(final ParametersDO parameters) {
+    public void analyzeData(final ParametersDO parameters) throws Exception {
         LOG.info("Fetching Ad-Juster Data...");
 
         jerseyRestController.setUrl(parameters.getUrl() + "/api/");
@@ -54,7 +55,8 @@ public class MainController {
         } catch (Exception e) {
             LOG.debug("Failed to fetch data from target url ({})", jerseyRestController.getUrl());
             LOG.error("ERROR: Failed to communicate with target URL ({})! ", e.getMessage());
-            System.exit(2);
+//            System.exit(2);
+            throw e;
         } finally {
             jerseyRestController.close();
         }

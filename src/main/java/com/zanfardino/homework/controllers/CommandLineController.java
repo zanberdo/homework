@@ -38,7 +38,8 @@ public class CommandLineController {
             commandLine = parser.parse(options, args);
             if (commandLine.hasOption("help")) {
                 formatter.printHelp(usage, null, options, null, true);
-                System.exit(0);
+//                System.exit(0);
+                return null;
             }
             if (commandLine.getOptions().length == 0) {
                 LOG.error("Failed to supply target URL and one or more required option.");

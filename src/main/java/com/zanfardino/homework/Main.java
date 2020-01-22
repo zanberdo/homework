@@ -19,9 +19,13 @@ public class Main {
         final CommandLineController commandLineController = new CommandLineController();
         final MainController controller = new MainController(commandLineController, analysisController1, jerseyRestController);
 
-        ParametersDO parameters = controller.getParameters(args);
-        controller.analyzeData(parameters);
-        controller.processRequest(parameters);
+        try {
+            ParametersDO parameters = controller.getParameters(args);
+            controller.analyzeData(parameters);
+            controller.processRequest(parameters);
+        } catch (Exception e) {
+            LOG.error("An exception was thrown.");
+        }
     }
 
 }
