@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS}[%10.10t](%40.40logger{10}) %5level : %msg%n"/>
+        </Console>
+        <File name="File" fileName="log/homework.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS}[%10.10t](%40.40logger{10}) %5level : %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="TRACE">
+            <AppenderRef ref="File" level="DEBUG"/>
+        </Root>
+    </Loggers>
+</Configuration>
