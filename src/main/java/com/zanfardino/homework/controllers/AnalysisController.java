@@ -44,8 +44,8 @@ public class AnalysisController {
                 if (creative.getParentId().equals(campaign.getId())) {
                     creativeSet.add(creative);
                 }
-                dataMap.put(campaign, creativeSet);
             }
+            dataMap.put(campaign, creativeSet);
         }
     }
 
