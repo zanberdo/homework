@@ -40,13 +40,11 @@ public class AnalysisController {
         for (CampaignDO campaign : campaigns) {
             campaignIdMap.put(campaign.getId(), campaign);
             final Set<CreativeDO> creativeSet = new HashSet<>();
-            dataMap.put(campaign, creativeSet);
             for (CreativeDO creative : creatives) {
                 if (creative.getParentId().equals(campaign.getId())) {
-                    final Set<CreativeDO> campaignCreativeSet = dataMap.get(campaign);
-                    campaignCreativeSet.add(creative);
-                    dataMap.put(campaign, campaignCreativeSet);
+                    creativeSet.add(creative);
                 }
+                dataMap.put(campaign, creativeSet);
             }
         }
     }
