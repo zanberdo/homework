@@ -1,6 +1,6 @@
 # Help
 java -jar homework-1.0-SNAPSHOT.jar -h
-usage: Supply appropriate option to process Ad-Juster test data.
+usage: Supply appropriate option to process test data.
  [--campaigns] [--clicks <CAMPAIGN ID>] [--creatives] [-h] [--impressions
        <CAMPAIGN ID>] [--report] [--summary <CAMPAIGN ID>] [--url <TARGET
        URL>] [--views <CAMPAIGN ID>]
@@ -21,28 +21,28 @@ usage: Supply appropriate option to process Ad-Juster test data.
 
 
 # Total clicks for campaign 12126023
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --click 12126023 | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --click 12126023 | jq
 {
   "clicks": 16717,
   "id": 12126023
 }
 
 # Total impressions for campaign 12126023
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --impressions 12126023 | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --impressions 12126023 | jq
 {
   "id": 12126023,
   "impressions": 197564
 }
 
 # Total views for campaign 12126023
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --views 12126023 | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --views 12126023 | jq
 {
   "id": 12126023,
   "views": 19437
 }
 
 # Summary for campaign 12126023
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --summary 12126023 | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --summary 12126023 | jq
 {
   "type": "campaignSummaryDO",
   "advertiser": "Telemundo",
@@ -122,18 +122,18 @@ java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --summar
 }
 
 # Total number of campaigns:
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --campaigns | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --campaigns | jq
 {
   "total": 199
 }
 
 # Total number of creatives:
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --creatives | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --creatives | jq
 {
   "total": 1630
 }
 # Full summary report:
-java -jar homework-1.0-SNAPSHOT.jar --url http://homework.ad-juster.com --report | jq
+java -jar homework-1.0-SNAPSHOT.jar --url http://localhost --report | jq
 [ {
    "type" : "campaignSummaryDO",
    "advertiser" : "Puma",
